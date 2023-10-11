@@ -15,8 +15,7 @@ class SensorData:
     """
 
     def __init__(self):
-        """
-        """
+        
         try:
             self.mongo_client = MongoDBClient(database_name=DATABASE_NAME)
 

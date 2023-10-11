@@ -4,6 +4,8 @@ from sensor.entity.config_entity import DataIngestionConfig
 from sensor.entity.artifact_entity import DataIngestionArtifact
 from sensor.data_access.sensor_data import SensorData
 from pandas import DataFrame
+from sklearn.model_selection import train_test_split
+import os,sys
 
 
 class DataIngestion:
@@ -11,15 +13,10 @@ class DataIngestion:
     def __init__(self, data_ingestion_config = DataIngestionConfig):
         self.data_ingestion_config = DataIngestionConfig()
 
-    # def initiate_data_ingestion(self)-> DataIngestionArtifact:
-    #     try:
-    #         pass
-    #     except Exception as e:
-    #         raise SensorException(e,sys)
         
     def export_data_into_feature_store(self)-> DataFrame:
         """
-        Export mongo db collection record as data frame into feature
+        Export mongo db collection record as data frame into feature store
         """
         try:
             logging.info("Exporting data from mongodb to feature store")
@@ -35,6 +32,48 @@ class DataIngestion:
 
             return dataframe
             
+        except Exception as e:
+            raise SensorException(e,sys)
+        
+    # def split_data_as_train_test(self,dataframe:DataFrame) ->None:
+    #     """
+    #     Feature store dataset will be split inti train and test file
+    #     """
+
+    #     try:
+    #         train_set, test_set = train_test_split(
+    #             dataframe, test_size= self.data_ingestion_config.train_test_split_ratio
+    #         )
+
+    #         logging.info("performed train test split on dataframe")
+
+    #         logging.info("Exited split_data_as_train_test method of Data_ingestion class")
+
+    #         dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
+
+    #         os.makedirs(dir_path,exist_ok=True)
+
+    #         logging.info(f"Exporting train and test file path")
+
+    #         train_set.to_csv(
+    #             self.data_ingestion_config.training_file_path, index=False, header=True
+    #         )
+
+    #         test_set.to_csv(self.data_ingestion_config.testing_file_path, index=False, header=True)
+
+    #         logging.info(f"Exported train and test file path")
+
+    #     except Exception as e:
+    #         raise SensorException(e,sys)
+    
+    def initiate_data_ingestion(self)-> DataIngestionArtifact:
+        try:
+            dataframe = self.export_data_into_feature_store()
+            self.split_data_as_train_test(dataframe=dataframe)
+            data_ingestion_artifact = DataIngestionArtifact(trained_file_path=self.data_ingestion_config.training_file_path,
+            test_file_path=self.data_ingestion_config.testing_file_path)
+                                                            
+            return data_ingestion_artifact
         except Exception as e:
             raise SensorException(e,sys)
 
