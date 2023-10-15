@@ -2,7 +2,8 @@ import pymongo
 from sensor.constant.database import DATABASE_NAME
 from sensor.constant.env_variable import MONGODB_URL_KEY
 import certifi
-import os
+import os,sys
+from sensor.exception import SensorException
 ca = certifi.where()
 
 class MongoDBClient:
@@ -11,14 +12,15 @@ class MongoDBClient:
         try:
 
             if MongoDBClient.client is None:
-                mongo_db_url = os.getenv(MONGODB_URL_KEY)
+                #mongo_db_url = os.getenv(MONGODB_URL_KEY)
+                mongo_db_url = "mongodb+srv://mujtabamohammedh123:fyB0Duvvajr1xB69@cluster0.j3tw5yk.mongodb.net/"
                 #print(mongo_db_url)
-                #if "localhost" in mongo_db_url:
-                    #MongoDBClient.client = pymongo.MongoClient(mongo_db_url) 
-                #else:
+                # if "localhost" in mongo_db_url:
+                #     MongoDBClient.client = pymongo.MongoClient(mongo_db_url) 
+                # else:
                 MongoDBClient.client = pymongo.MongoClient(mongo_db_url, tlsCAFile=ca)
             self.client = MongoDBClient.client
             self.database = self.client[database_name]
             self.database_name = database_name
         except Exception as e:
-            raise e
+            raise SensorException(e,sys)
