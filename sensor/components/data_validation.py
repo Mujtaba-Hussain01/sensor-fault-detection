@@ -31,7 +31,7 @@ class DataValidation:
     def validate_number_of_columns(self,dataframe:pd.DataFrame)-> bool:
         try:
             number_of_columns = self._schema_config["columns"]
-            logging.info(f"required no of columns:{number_of_columns}")
+            logging.info(f"required no of columns:{len(number_of_columns)}")
             logging.info(f"dataframe has  columns:{len(dataframe.columns)}")
             if len(dataframe.columns)==len(number_of_columns):
                 return True
@@ -51,7 +51,7 @@ class DataValidation:
                     numerical_columns_present=False
                     missing_numerical_columns.append(num_column)
             logging.info(f"Missing numerical columns: [{missing_numerical_columns}]")
-
+            return numerical_columns_present
         except Exception as e:
             raise SensorException(e,sys)
 

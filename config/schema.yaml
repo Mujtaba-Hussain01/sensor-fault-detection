@@ -1,7 +1,6 @@
 columns:
   - class: category
   - aa_000: int
-  - ab_000: int
   - ac_000: int
   - ad_000: int
   - ae_000: int
@@ -74,11 +73,6 @@ columns:
   - bk_000: int
   - bl_000: int
   - bm_000: int
-  - bn_000: int
-  - bo_000: int
-  - bp_000: int
-  - bq_000: int
-  - br_000: int
   - bs_000: int
   - bt_000: int
   - bu_000: int
@@ -112,7 +106,6 @@ columns:
   - co_000: int
   - cp_000: int
   - cq_000: int
-  - cr_000: int
   - cs_000: int
   - cs_001: int
   - cs_002: int
