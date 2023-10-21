@@ -4,4 +4,6 @@ seaborn
 pymongo
 xgboost
 catboost
+pyYAML
+scipy
 #-e .
