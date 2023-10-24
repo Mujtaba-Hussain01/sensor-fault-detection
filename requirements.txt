@@ -6,4 +6,6 @@ xgboost
 catboost
 pyYAML
 scipy
+dill
+imbalanced-learn
 #-e .
