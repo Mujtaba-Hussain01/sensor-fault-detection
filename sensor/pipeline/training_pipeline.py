@@ -8,6 +8,10 @@ from sensor.components.data_transformation import DataTransformation
 from sensor.components.model_trainer import ModelTrainer
 from sensor.components.model_evaluation import ModelEvaluation
 from sensor.components.model_pusher import ModelPusher
+
+from sensor.cloud_storage.s3_syncer import S3Sync
+from sensor.constant.s3_bucket import TRAINING_BUCKET_NAME
+from sensor.constant.training_pipeline import SAVED_MODEL_DIR
 import os,sys
 import numpy as np
 import pandas as pd
@@ -87,6 +91,22 @@ class TrainPipeline:
         except Exception as e:
             raise SensorException(e,sys)
         
+
+    def sync_artifact_dir_to_s3(self):
+        try:
+            aws_bucket_url = f"s3//{TRAINING_BUCKET_NAME}/artifact/{self.training_pipeline_config.timestamp}"
+            self.s3_sync.sync_folder_to_s3(folder = self.training_pipeline_config.artifact_dir, aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise SensorException(e,sys)
+        
+    def sync_saved_model_dir_to_s3(self):
+        try:
+            aws_bucket_url = f"s3//{TRAINING_BUCKET_NAME}/{SAVED_MODEL_DIR}"
+            self.s3_sync.sync_folder_to_s3(folder=SAVED_MODEL_DIR,aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise SensorException(e.sys)
+        
+        
     def run_pipeline(self):
         try:
 
@@ -101,9 +121,13 @@ class TrainPipeline:
             if not model_evaluation_artifact.is_model_accepted:
                 raise Exception("Trained model is not better than the best model")
             model_pusher_artifact:model_pusher_artifact = self.start_model_pusher(model_evaluation_artifact=model_evaluation_artifact)
-
             TrainPipeline.is_pipeline_running=False
+
+            self.sync_artifact_dir_to_s3()
+            self.sync_saved_model_dir_to_s3()
         except Exception as e:
+            self.sync_artifact_dir_to_s3()
+            TrainPipeline.is_pipeline_running=False
             raise SensorException(e,sys)
         
 

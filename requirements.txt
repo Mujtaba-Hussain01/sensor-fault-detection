@@ -8,4 +8,14 @@ pyYAML
 scipy
 dill
 imbalanced-learn
-#-e .
+fastapi
+uvicorn
+dnspython
+from-root
+httptools
+watchfiles
+websockets
+wincertstore
+pip-chill
+python-dotenv
+-e .
